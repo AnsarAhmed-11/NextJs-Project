@@ -27,14 +27,10 @@ export async function proxy(request) {
                 new URL("/SignIn", request.url)
             );
         }
-        console.log("user ",user);
-
-        console.log("User role:", user.role);
-
         // Super Admin can access superAdmin
         if (
             path.startsWith("/superAdmin") &&
-            user.role !== "SUPER_ADMIN"
+            user.role !== "Super_Admin"
         ) {
             return NextResponse.redirect(
                 new URL("/unauthorized", request.url)
@@ -43,9 +39,9 @@ export async function proxy(request) {
 
         // Admin can access admin
         if (
-            path.startsWith("/admin") &&
-            user.role !== "ADMIN" &&
-            user.role !== "SUPER_ADMIN"
+            path.startsWith("/Admin") &&
+            user.role !== "Admin" &&
+            user.role !== "Super_Admin"
         ) {
             return NextResponse.redirect(
                 new URL("/SignIn", request.url)

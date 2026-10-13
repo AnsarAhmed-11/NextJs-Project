@@ -23,7 +23,7 @@ const LoginForm = () => {
             console.log(res.data);
 
             if (res.data.status === true) {
-                if (res.data.user.role === "SUPER_ADMIN") {
+                if (res.data.user.role === "Super_Admin") {
                     toast.success("welcome to Admin Profile")
                     return router.push("/superAdmin")
                 }
@@ -78,7 +78,7 @@ const LoginForm = () => {
             <section className="auth-card">
 
                 <div className="auth-heading">
-                    <h2>Welcome Back</h2>
+                    <h2>Login</h2>
 
                     <p>
                         Sign in to continue your journey.

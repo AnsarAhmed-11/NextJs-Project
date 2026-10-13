@@ -25,6 +25,7 @@ import {
 import styles from "./superAdmin.module.css";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import LogoutButton from "../Components/loggedOut/loggedOut";
 
 //fake users
 // const startingUsers = [
@@ -76,9 +77,7 @@ export default function SuperAdminPage() {
             tone: "blue",
 
             role:
-              user.role === "SUPER_ADMIN" || user.role === "ADMIN"
-                ? "Admin"
-                : "User",
+              user.role === "Super_Admin" ? "Super Admin" : ["Admin", "Admin"].includes(user.role) ? "Admin" : "User",
 
             status: user.status ?? "Active",
             lastActive: user.lastActive ?? "—",
@@ -107,41 +106,24 @@ export default function SuperAdminPage() {
     });
   }, [users, query, roleFilter]);
 
-  var adminCount = users.filter(
-    (user) => user.role === "Admin"
+  const adminCount = users.filter(
+    (user) => user.role === "Admin" || user.role === "Super Admin"
   ).length;
 
-  var adminCount = users.filter((user) => user.role === "Admin").length;
-
-  async function handleLogout() {
-    if (isLoggingOut) return;
-    setIsLoggingOut(true);
-
-    try {
-      const response = await fetch("/api/auth/logout", { method: "POST" });
-      if (!response.ok) throw new Error("Logout failed");
-      router.replace("/SignIn");
-      router.refresh();
-    } catch {
-      setIsLoggingOut(false);
-      setNotice("Could not sign out. Please try again.");
-    }
-  }
-
-
-  async function toggleRole(id) {
+async function toggleRole(id) {
     const user = users.find((u) => u.id === id);
     if (!user) return;
-    console.log("current role",user.role);
+    console.log("current role", user.role);
 
     // Prevent changing the super admin's role.
-    if (user.role === "SUPER_ADMIN" || user.role === "Super Admin") {
+    if (user.role === "Super Admin") {
       alert("You cannot change the super admin's role.");
       return;
     }
     const nextRole = user.role === "Admin" ? "User" : "Admin";
+
     const confirmed = window.confirm(
-      `Do you want to make ${user.name} ${nextRole === "Admin " ? "an Admin" : "a User"}?`
+      `Do you want to make ${user.name} ${nextRole === "Admin" ? "as Admin" : "as User"}?`
     );
 
     if (!confirmed) return;
@@ -198,8 +180,7 @@ export default function SuperAdminPage() {
         <header className={styles.topbar}>
           <div className={styles.breadcrumb}><span>Control center</span><span>/</span><strong>User access</strong></div>
           <div className={styles.headerActions}><button className={styles.iconButton} aria-label="Notifications"><Bell size={19} /><i /></button><span className={`${styles.avatar} ${styles.headerAvatar}`}>SA</span>
-            <button className={styles.logoutButton} onClick={handleLogout} disabled={isLoggingOut}><LogOut size={16} /><span>{isLoggingOut ? "Signing out…" : "Sign out"}</span>
-            </button>
+            <LogoutButton/>
           </div>
         </header>
 
@@ -297,14 +278,6 @@ export default function SuperAdminPage() {
           </section>
 
           <aside className={styles.rightRail}>
-            {/* <section className={`${styles.panel} ${styles.uploadPanel}`}>
-              <div className={styles.panelHeading}><div><h2>Image library</h2><p>Upload images for your site.</p></div></div>
-              <input ref={inputRef} className={styles.fileInput} type="file" accept="image/*" multiple onChange={handleUpload} />
-              <button className={styles.dropzone} onClick={() => inputRef.current?.click()}><span><Upload size={20} /></span><strong>Upload images</strong><small>PNG, JPG or WEBP up to 10MB</small></button>
-              <div className={styles.assetRow}><span className={styles.assetPreview}><FolderOpen size={17} /></span><span><strong>{uploads.length ? `${uploads.length} new image${uploads.length > 1 ? "s" : ""}` : "18 images"}</strong><small>Available in the media library</small></span><ArrowUpRight size={17} /></div>
-              {uploads.length > 0 && <div className={styles.previewGrid}>{uploads.map((image) => <img key={image.url} src={image.url} alt={image.name} />)}</div>}
-            </section> */}
-
             <section className={`${styles.panel} ${styles.activityPanel}`}>
               <div className={styles.panelHeading}><div><h2>Recent activity</h2><p>Latest workspace changes</p></div><button className={styles.viewAll} onClick={() => setNotice("Activity log opened.")}>View all</button></div>
               <ul className={styles.activityList}>

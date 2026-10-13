@@ -1,26 +1,32 @@
 import React, { useState } from 'react'
+import { LogOut } from "lucide-react"
+import { useRouter } from 'next/navigation'
+import axios from 'axios';
+import toast from "react-hot-toast";
 
-const loggedOut = () => {
-    const [isLoggingOut,setLoggingOut]=useState(false)
-    async function handleLogout() {
+const LogoutButton = () => {
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const router = useRouter()
+
+  async function handleLogout() {
     if (isLoggingOut) return;
     setIsLoggingOut(true);
-
     try {
-      const response = await fetch("/api/auth/logout", { method: "POST" });
-      if (!response.ok) throw new Error("Logout failed");
+      console.log("clicked");
+
+      const response = await axios.post("/api/auth/logout");
+      toast.success("logout SuccessFully");
       router.replace("/SignIn");
       router.refresh();
     } catch {
       setIsLoggingOut(false);
-      setNotice("Could not sign out. Please try again.");
     }
   }
   return (
-    <div className="loggedOut">
-        thisb is
+    <div>
+      <button className='logoutButton' onClick={handleLogout} disabled={isLoggingOut}><LogOut size={16} /><span>{isLoggingOut ? "Signing out…" : "Sign out"}</span>
+      </button>
     </div>
   )
 }
-
-export default loggedOut
+export default LogoutButton

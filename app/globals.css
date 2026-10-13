@@ -35,24 +35,43 @@ body {
   padding: 40px 20px;
   overflow: hidden;
   background:
-    radial-gradient(
-      circle at 20% 20%,
+    radial-gradient(circle at 20% 20%,
       rgba(247, 37, 133, 0.12),
-      transparent 30%
-    ),
-    radial-gradient(
-      circle at 80% 80%,
+      transparent 30%),
+    radial-gradient(circle at 80% 80%,
       rgba(76, 201, 240, 0.12),
-      transparent 30%
-    ),
+      transparent 30%),
     #000;
 }
-.loggedOut{
-  background: red;
-  height: 50px;
-  width: 100px;
-  color: #000;
+
+.logoutButton {
+  min-height: 35px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid #e2e7f0;
+  border-radius: 6px;
+  background: #fff;
+  color: #44516a;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color .18s ease, background .18s ease, color .18s ease;
 }
+
+
+.join, .mobileJoin {
+  padding: 9px 14px;
+  border: 1px solid #d6ff5c;
+  color: #d6ff5c !important;
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: 700;
+}
+
 /* ========================================
    BACKGROUND GLOW
 ======================================== */
@@ -121,12 +140,10 @@ body {
 
   border-radius: 15px;
 
-  background: linear-gradient(
-    135deg,
-    #f72585,
-    #7209b7,
-    #4cc9f0
-  );
+  background: linear-gradient(135deg,
+      #f72585,
+      #7209b7,
+      #4cc9f0);
 
   color: white;
   font-size: 28px;
@@ -442,13 +459,11 @@ body {
   border: none;
   border-radius: 10px;
 
-  background: linear-gradient(
-    90deg,
-    #f72585,
-    #7209b7,
-    #4361ee,
-    #4cc9f0
-  );
+  background: linear-gradient(90deg,
+      #f72585,
+      #7209b7,
+      #4361ee,
+      #4cc9f0);
 
   background-size: 300% 100%;
 
@@ -764,9 +779,11 @@ body {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+
   html {
     @apply font-sans;
   }
