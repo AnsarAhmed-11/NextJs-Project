@@ -6,6 +6,10 @@ import { useActionState, useState } from "react";
 import toast from "react-hot-toast";
 
 const LoginForm = () => {
+    const [formData,setFormData]=useState({
+        email:"",
+        password:""
+    })
     const [showPassword, setShowPassword] = useState(false);
     const router = useRouter();
 
@@ -21,7 +25,9 @@ const LoginForm = () => {
                 }
             );
             console.log(res.data);
-
+            if(res.data.success){
+                setFormData({email:"",password:""})
+            }
             if (res.data.status === true) {
                 if (res.data.user.role === "Super_Admin") {
                     toast.success("welcome to Admin Profile")
@@ -134,6 +140,8 @@ const LoginForm = () => {
                                 name="email"
                                 placeholder="john@example.com"
                                 autoComplete="email"
+                                value={formData.email}
+                                onChange={(e)=>setFormData({...formData,email:e.target.value})}
                                 required
                             />
                         </div>
@@ -171,6 +179,8 @@ const LoginForm = () => {
                                 name="password"
                                 placeholder="••••••••"
                                 autoComplete="current-password"
+                                value={formData.password}
+                                onChange={(e)=>setFormData({...formData,password:e.target.value})}
                                 required
                             />
 

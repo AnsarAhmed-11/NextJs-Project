@@ -13,7 +13,7 @@ export async function POST(request) {
         const result = await findByEmail(email)
         if (result.length > 0) {
             return NextResponse.json({
-                error: "user already exists"
+                error: "email already Exists , Login Please"
             }, { status: 409 })
         }
         const hashPassword = await bcrypt.hash(password, 10)

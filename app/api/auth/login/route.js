@@ -2,7 +2,10 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 const { findByEmail } = require("../../../models/user.model");
 const { createToken } = require("../../../config/auth");
-
+/**
+ * -POST api/auth/login
+ * -User Login
+ */
 export async function POST(request) {
     try {
         const { email, password } = await request.json();
@@ -11,7 +14,8 @@ export async function POST(request) {
             return NextResponse.json(
                 {
                     error: "Fields are required",
-                    status: false
+                    status: false,
+                    success: false
                 },
                 { status: 400 }
             );
@@ -30,31 +34,33 @@ export async function POST(request) {
         }
 
         // Check password here
-        console.log("user password",user.password_hash);
-        console.log("ui password",password);
+        console.log("user password", user.password_hash);
+        console.log("ui password", password);
 
-        const isPassword = await bcrypt.compare(password,user.password_hash)
+        const isPassword = await bcrypt.compare(password, user.password_hash)
         if (!isPassword) {
             return NextResponse.json(
                 {
                     error: "Incorrect password",
-                    status: false
+                    status: false,
+                    success: false
                 },
                 { status: 401 }
             );
         }
         // Create JWT
-        const token = await createToken(user.id,user.role);
+        const token = await createToken(user.id, user.role);
 
         // Create response first
         const response = NextResponse.json({
             message: "Login successful",
             status: true,
+            success: true,
             user: {
                 id: user.id,
                 name: user.user_name,
                 email: user.email,
-                role:user.role
+                role: user.role
             }
         });
 
@@ -64,7 +70,7 @@ export async function POST(request) {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
-            maxAge: 60*60*24,
+            maxAge: 60 * 60 * 24,
             path: "/"
         });
 
@@ -76,7 +82,8 @@ export async function POST(request) {
         return NextResponse.json(
             {
                 error: "Backend catch error",
-                status: false
+                status: false,
+                success: false
             },
             { status: 500 }
         );

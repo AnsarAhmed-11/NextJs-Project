@@ -4,27 +4,37 @@ import { useRouter } from 'next/navigation'
 import axios from 'axios';
 import toast from "react-hot-toast";
 
+/**
+ * - Logout Component
+ * - POST api/auth/logout
+ */
 const LogoutButton = () => {
-  const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const [logOut, setLogOut] = useState(false)
   const router = useRouter()
 
   async function handleLogout() {
-    if (isLoggingOut) return;
-    setIsLoggingOut(true);
+    if (logOut) return;
+    setLogOut(true);
     try {
       console.log("clicked");
 
       const response = await axios.post("/api/auth/logout");
-      toast.success("logout SuccessFully");
-      router.replace("/SignIn");
-      router.refresh();
+      if(response.data.success===true){
+        toast.success("logout SuccessFully");
+        router.replace("/SignIn");
+        router.refresh();
+      }else{
+        toast.error("LogOut Failed")
+        setLogOut(false)
+      }
+
     } catch {
-      setIsLoggingOut(false);
+      setLogOut(false);
     }
   }
   return (
     <div>
-      <button className='logoutButton' onClick={handleLogout} disabled={isLoggingOut}><LogOut size={16} /><span>{isLoggingOut ? "Signing out…" : "Sign out"}</span>
+      <button className='logoutButton' onClick={handleLogout} disabled={logOut}><LogOut size={16} /><span>{logOut ? "Signing out…" : "Sign out"}</span>
       </button>
     </div>
   )

@@ -4,9 +4,14 @@ import axios from "axios";
 import { useActionState, useState } from "react";
 import toast from "react-hot-toast";
 import Link from "next/link";
+
 const Form = ({ formType }) => {
     const [showPassword, setShowPassword] = useState(false);
-
+    const [formData, setFormData] = useState({
+        name:"",
+        email: "",
+        password: ""
+    })
     const formHandler = async (prevData, formData) => {
         const name = formData.get("name");
         const email = formData.get("email");
@@ -22,6 +27,7 @@ const Form = ({ formType }) => {
             );
 
             if (res.data.status === "success") {
+                setFormData({ email: "", password: "" })
                 toast.success("User Created Successfully");
             } else {
                 toast.error("User not Created");
@@ -150,6 +156,8 @@ const Form = ({ formType }) => {
                                 name="name"
                                 placeholder="John Doe"
                                 autoComplete="name"
+                                value={formData.name}
+                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                 required
                             />
                         </div>
@@ -172,6 +180,8 @@ const Form = ({ formType }) => {
                                 name="email"
                                 placeholder="john@example.com"
                                 autoComplete="email"
+                                value={formData.email}
+                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                 required
                             />
                         </div>
@@ -205,6 +215,8 @@ const Form = ({ formType }) => {
                                 placeholder="••••••••"
                                 autoComplete="new-password"
                                 minLength={8}
+                                value={formData.email}
+                                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                 required
                             />
 
@@ -242,50 +254,50 @@ const Form = ({ formType }) => {
                             <a onClick={() => {
                                 toast.error("under development")
                             }}>
-                            Privacy Policy
-                        </a>
-                    </span>
-                </label>
+                                Privacy Policy
+                            </a>
+                        </span>
+                    </label>
 
-                {/* Submit */}
-                <button
-                    type="submit"
-                    disabled={pending}
-                    className="submit-btn"
-                >
-                    {pending ? (
-                        <>
-                            <span className="spinner"></span>
-                            Creating account...
-                        </>
-                    ) : (
-                        "Create Account →"
-                    )}
-                </button>
+                    {/* Submit */}
+                    <button
+                        type="submit"
+                        disabled={pending}
+                        className="submit-btn"
+                    >
+                        {pending ? (
+                            <>
+                                <span className="spinner"></span>
+                                Creating account...
+                            </>
+                        ) : (
+                            "Create Account →"
+                        )}
+                    </button>
 
-            </form>
+                </form>
 
-            {/* Error */}
-            {data?.error && (
-                <div className="form-error">
-                    ⚠ {data.error}
-                </div>
-            )}
+                {/* Error */}
+                {data?.error && (
+                    <div className="form-error">
+                        ⚠ {data.error}
+                    </div>
+                )}
 
-            {/* Success */}
-            {data?.message && !data?.error && (
-                <div className="form-success">
-                    ✓ {data.message}
-                </div>
-            )}
+                {/* Success */}
+                {data?.message && !data?.error && (
+                    <div className="form-success">
+                        ✓ {data.message}
+                    </div>
+                )}
 
-            {/* Login */}
-            <p className="login-text">
-                Already have an account?{" "}
-                <Link href="/SignIn">SignIn</Link>
-            </p>
+                {/* Login */}
+                <p className="login-text">
+                    Already have an account?{" "}
+                    <Link href="/SignIn">SignIn</Link>
+                </p>
 
-        </section>
+            </section>
         </main >
     );
 };

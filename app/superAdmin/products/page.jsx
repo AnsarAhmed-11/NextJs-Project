@@ -7,7 +7,7 @@ import {
   CheckCircle2,
   ChevronDown,
   Clock3,
-  Database,LogOut,
+  Database,
   ImagePlus,
   PackagePlus,
   Save,
@@ -21,7 +21,7 @@ import adminStyles from "../superAdmin.module.css";
 import styles from "./productAdmin.module.css";
 import axios from "axios";
 import toast from "react-hot-toast";
-
+import LogOut from '../../Components/loggedOut/loggedOut'
 const emptyProduct = {
   name: "",
   category: "Dresses",
@@ -40,8 +40,6 @@ export default function ProductAdminPage() {
   const [products, setProducts] = useState([]);
   const [notice, setNotice] = useState("");
   const inputRef = useRef(null);
-  const [loading, setLoading] = useState(false);
-  const [isLoggingOut, setIsLoggingOut] = useState(false)
 
   function updateField(event) {
     const { name, value, type, checked } = event.target;
@@ -69,19 +67,6 @@ export default function ProductAdminPage() {
     });
 
     event.target.value = "";
-  }
-  async function handleLogout() {
-    if (isLoggingOut) return;
-    setIsLoggingOut(true);
-    try {
-      const response = await fetch("/api/auth/logout", { method: "POST" });
-      if (!response.ok) throw new Error("Logout failed");
-      router.replace("/SignIn");
-      router.refresh();
-    } catch {
-      setIsLoggingOut(false);
-      setNotice("Could not sign out. Please try again.");
-    }
   }
   async function submitProduct(event) {
     event.preventDefault();
@@ -143,21 +128,6 @@ export default function ProductAdminPage() {
       );
     }
   }
-
-  async function handleLogout() {
-    if (isLoggingOut) return;
-    setIsLoggingOut(true);
-
-    try {
-      const response = await fetch("/api/auth/logout", { method: "POST" });
-      if (!response.ok) throw new Error("Logout failed");
-      router.replace("/SignIn");
-      router.refresh();
-    } catch {
-      setIsLoggingOut(false);
-      setNotice("Could not sign out. Please try again.");
-    }
-  }
   return (
     <main className={adminStyles.dashboard}>
       <aside className={adminStyles.sidebar}>
@@ -179,9 +149,7 @@ export default function ProductAdminPage() {
           <div className={adminStyles.breadcrumb}><span>Control center</span><span>/</span><strong>Products</strong></div>
           <div className={adminStyles.headerActions}><button className={adminStyles.iconButton} aria-label="Notifications"><Bell size={19} /><i /></button><span className={`${adminStyles.avatar} ${adminStyles.headerAvatar}`}
           >SA</span></div>
-          <button className={styles.logoutButton} onClick={handleLogout} disabled={isLoggingOut}>
-            <LogOut size={16} /><span>{isLoggingOut ? "Signing out…" : "Sign out"}</span>
-          </button>
+          <LogOut/>
         </header>
 
 

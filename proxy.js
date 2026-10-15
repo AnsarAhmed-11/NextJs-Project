@@ -7,7 +7,6 @@ export async function proxy(request) {
 
     // Protected routes
     if (
-        path.startsWith("/admin") ||
         path.startsWith("/superAdmin") ||
         path.startsWith("/dashboard") ||
         path.startsWith("/superAdmin/products")
@@ -37,11 +36,10 @@ export async function proxy(request) {
             );
         }
 
-        // Admin can access admin
+        // Admin can access product panel only
         if (
-            path.startsWith("/Admin") &&
-            user.role !== "Admin" &&
-            user.role !== "Super_Admin"
+            path.startsWith("/superAdmin/products") &&
+            user.role !== "Admin" && user.role !== "Super_Admin"
         ) {
             return NextResponse.redirect(
                 new URL("/SignIn", request.url)
@@ -57,7 +55,7 @@ export async function proxy(request) {
 export const config = {
     matcher: [
         "/admin/:path*",
-        "/superAdmin/:path*",
+        "/superAdmin",
         "/dashboard/:path*",
     ],
 };
