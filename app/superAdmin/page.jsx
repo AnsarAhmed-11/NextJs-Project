@@ -26,16 +26,6 @@ import styles from "./superAdmin.module.css";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import LogoutButton from "../Components/loggedOut/loggedOut";
-
-//fake users
-// const startingUsers = [
-//   { id: 1, name: "Olivia Bennett", email: "olivia.bennett@northstar.co", initials: "OB", tone: "coral", role: "Admin", status: "Active", lastActive: "Now" },
-//   { id: 2, name: "Ethan Walker", email: "ethan.walker@northstar.co", initials: "EW", tone: "blue", role: "User", status: "Active", lastActive: "12 min ago" },
-//   { id: 3, name: "Maya Patel", email: "maya.patel@northstar.co", initials: "MP", tone: "gold", role: "User", status: "Pending", lastActive: "Never" },
-//   { id: 4, name: "Noah Williams", email: "noah.williams@northstar.co", initials: "NW", tone: "green", role: "Admin", status: "Active", lastActive: "Yesterday" },
-//   { id: 5, name: "Sophia Kim", email: "sophia.kim@northstar.co", initials: "SK", tone: "lavender", role: "User", status: "Active", lastActive: "2 days ago" },
-// ];
-
 export default function SuperAdminPage() {
   const router = useRouter();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
