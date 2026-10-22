@@ -26,6 +26,8 @@ import styles from "./superAdmin.module.css";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import LogoutButton from "../Components/loggedOut/loggedOut";
+import { ThemeToggleButton } from "../../components/ui/skiper-ui/skiper26";
+
 export default function SuperAdminPage() {
   const router = useRouter();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -74,7 +76,6 @@ export default function SuperAdminPage() {
           };
         });
         setUsers(formattedUsers);
-        console.log(users);
       } catch (error) {
         console.error("Users fetch error:", error);
       }
@@ -100,10 +101,9 @@ export default function SuperAdminPage() {
     (user) => user.role === "Admin" || user.role === "Super Admin"
   ).length;
 
-async function toggleRole(id) {
+  async function toggleRole(id) {
     const user = users.find((u) => u.id === id);
     if (!user) return;
-    console.log("current role", user.role);
 
     // Prevent changing the super admin's role.
     if (user.role === "Super Admin") {
@@ -150,6 +150,9 @@ async function toggleRole(id) {
     setNotice(`${files.length} image${files.length > 1 ? "s" : ""} ready to upload.`);
     event.target.value = "";
   }
+  const superAdmin = users.find(
+  (user) => user.role === "Super Admin"
+);
   return (
     <main className={styles.dashboard}>
       <aside className={styles.sidebar}>
@@ -162,7 +165,16 @@ async function toggleRole(id) {
         </nav>
         <div className={styles.sidebarBottom}>
           <div className={styles.helpBox}><Shield size={18} /><p>Only super admins can change access levels.</p></div>
-          <button className={styles.account}><span className={`${styles.avatar} ${styles.adminAvatar}`}>SA</span><span><strong>Super Admin</strong><small>admin@northstar.co</small></span><ChevronDown size={15} /></button>
+          <button className={styles.account}><span className={`${styles.avatar} ${styles.adminAvatar}`}>SA</span>
+            <span>
+              <strong>Super Admin</strong>
+              <small>
+                <small>
+                  {superAdmin?.email ?? ""}
+                </small>
+              </small>
+            </span>
+            <ChevronDown size={15} /></button>
         </div>
       </aside>
 
@@ -170,7 +182,8 @@ async function toggleRole(id) {
         <header className={styles.topbar}>
           <div className={styles.breadcrumb}><span>Control center</span><span>/</span><strong>User access</strong></div>
           <div className={styles.headerActions}><button className={styles.iconButton} aria-label="Notifications"><Bell size={19} /><i /></button><span className={`${styles.avatar} ${styles.headerAvatar}`}>SA</span>
-            <LogoutButton/>
+            <ThemeToggleButton />
+            <LogoutButton />
           </div>
         </header>
 

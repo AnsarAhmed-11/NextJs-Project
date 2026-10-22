@@ -1,5 +1,6 @@
 "use client";
 
+import { ThemeToggleButton } from "@/components/ui/skiper-ui/skiper26";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useActionState, useState } from "react";
@@ -212,6 +213,7 @@ const LoginForm = () => {
                             Remember me
                         </span>
                     </label>
+                    <ThemeToggleButton variant="gif" gifUrl="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcG5sMXJod2l2NWxrM29xbXJic3I2dzUzeXo3NjFlaGZ5ZmkzNGRwYyZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/KGjlaKWM8L2yoLrky6/giphy.gif"/>
 
                     {/* Submit */}
                     <button

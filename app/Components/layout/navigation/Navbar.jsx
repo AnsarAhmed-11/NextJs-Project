@@ -9,6 +9,7 @@ import styles from "./navbar.module.css";
 import axios from "axios";
 import toast from "react-hot-toast";
 import AuthControls from "../../loggedOut/AuthControls"
+import { ThemeToggleButton } from "../../../../components/ui/skiper-ui/skiper26";
 
 const links = [
   { href: "/", label: "Home" },
@@ -37,7 +38,8 @@ export default function Navbar() {
           <Link href="/cart" className={styles.bagButton} aria-label={`Shopping bag with ${itemCount} items`}>
             <ShoppingBag size={18} /><span>{itemCount}</span>
           </Link>
-          <AuthControls />
+          <ThemeToggleButton  variant="gif" start="center" gifUrl="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3b2ZpZnk0Ymg4aWhqbmgwbG10dTA3a255cGt4YjZkZzVyODFyODZqaCZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/fxqzWdjvacWEie6gho/giphy.gif"/>
+          <AuthControls  />
 
           <button className={styles.menuButton} onClick={() => setIsOpen((open) => !open)} aria-label="Toggle menu" aria-expanded={isOpen}>{isOpen ? <X size={21} /> : <Menu size={21} />}</button>
         </div>
