@@ -33,7 +33,7 @@ const AuthControls = () => {
     }
 
     return (<>
-        <Link href="/SignIn" className='join'>Join us</Link>
+        <Link href="/SignIn" className="max-[800px]:hidden border border-[#d6ff5c] px-[14px] py-[9px] text-[11px] font-bold text-[#d6ff5c] no-underline hover:bg-[#d6ff5c] hover:text-[#15200d]">Join us</Link>
     </>
     );
 };

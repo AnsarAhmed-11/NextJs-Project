@@ -22,11 +22,11 @@ import {
   UsersRound,
   X,
 } from "lucide-react";
-import styles from "./superAdmin.module.css";
+import styles from "./superAdmin.styles";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import LogoutButton from "../Components/loggedOut/loggedOut";
-import { ThemeToggleButton } from "../../components/ui/skiper-ui/skiper26";
+import { ThemeToggleButton } from "../../components/ui/theme-toggle-button";
 
 export default function SuperAdminPage() {
   const router = useRouter();
@@ -182,7 +182,6 @@ export default function SuperAdminPage() {
         <header className={styles.topbar}>
           <div className={styles.breadcrumb}><span>Control center</span><span>/</span><strong>User access</strong></div>
           <div className={styles.headerActions}><button className={styles.iconButton} aria-label="Notifications"><Bell size={19} /><i /></button><span className={`${styles.avatar} ${styles.headerAvatar}`}>SA</span>
-            <ThemeToggleButton />
             <LogoutButton />
           </div>
         </header>

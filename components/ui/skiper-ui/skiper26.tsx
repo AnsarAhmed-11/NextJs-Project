@@ -458,7 +458,7 @@ export const useThemeToggle = ({
   blur?: boolean;
   gifUrl?: string;
 } = {}) => {
-  const { theme, setTheme, resolvedTheme } = useTheme();
+  const {setTheme, resolvedTheme } = useTheme();
 
   const [isDark, setIsDark] = useState(false);
 
@@ -484,7 +484,8 @@ export const useThemeToggle = ({
   }, []);
 
   const toggleTheme = useCallback(() => {
-    setIsDark(!isDark);
+    const nextTheme=resolvedTheme==="dark"?"light":"dark";
+    setIsDark(nextTheme==="dark");
 
     const animation = createAnimation(variant, start, blur, gifUrl);
 
@@ -493,17 +494,16 @@ export const useThemeToggle = ({
     if (typeof window === "undefined") return;
 
     const switchTheme = () => {
-      setTheme(theme === "light" ? "dark" : "light");
+      setTheme(nextTheme);
     };
-
-    if (!document.startViewTransition) {
-      switchTheme();
-      return;
+    if(typeof document==="undefined" || typeof document.startViewTransition !=="function"){
+      switchTheme()
+      return
     }
 
     document.startViewTransition(switchTheme);
   }, [
-    theme,
+    resolvedTheme,
     setTheme,
     variant,
     start,
@@ -617,7 +617,7 @@ export const ThemeToggleButton = ({
     <button
       type="button"
       className={cn(
-        "size-10 cursor-pointer rounded-full bg-black p-0 transition-all duration-300 active:scale-85",
+        "size-10 cursor-pointer rounded-full p-0 transition-all duration-300 active:scale-85",isDark?"bg-white text-black":"bg-black text-white",
         className,
       )}
       onClick={toggleTheme}

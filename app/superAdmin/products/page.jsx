@@ -17,8 +17,8 @@ import {
   X,
 } from "lucide-react";
 import Link from "next/link";
-import adminStyles from "../superAdmin.module.css";
-import styles from "./productAdmin.module.css";
+import adminStyles from "../superAdmin.styles";
+import styles from "./productAdmin.styles";
 import axios from "axios";
 import toast from "react-hot-toast";
 import LogOut from '../../Components/loggedOut/loggedOut'
