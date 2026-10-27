@@ -11,7 +11,11 @@ import { ThemeToggleButton } from "../../../../components/ui/theme-toggle-button
 export default function HomeProducts() {
   const { addItem } = useCart();
   const [showProduct, setProduct] = useState(false)
-  return <section className="bg-[#f7f6f1] px-[max(28px,calc((100vw-1240px)/2))] py-[88px] font-sans text-[#191918] max-[1000px]:px-7 max-[1000px]:py-[70px] max-[680px]:px-[18px] max-[680px]:py-[54px]">
+
+  function viewProduct(productData) {
+    console.log(productData);
+  }
+  return <section className="bg-[#f7f6f1] px-[max(28px,calc((100vw-1240px)/2))] py-[88px] font-sans text-[#191918] max-[1000px]:px-7 max-[1000px]:py-[70px] max-[680px]:px-[18px] max-[680px]:py-[54px] dark:bg-zinc-950 dark:text-zinc-100">
     <div className="mb-[31px] flex items-end justify-between gap-5 max-[680px]:items-start max-[680px]:flex-col max-[680px]:gap-[14px]">
       <div>
         <p className="mb-[10px] text-[10px] font-bold uppercase tracking-[1.3px] text-[#76884a]">Selected for now
@@ -24,7 +28,8 @@ export default function HomeProducts() {
     </div>
     <div className="grid grid-cols-4 gap-[17px] max-[1000px]:grid-cols-3 max-[680px]:grid-cols-2 max-[680px]:gap-x-[10px] max-[680px]:gap-y-[23px]">
       {products.map((product, index) =>
-        <article className="group" key={product.id}>
+        <article className="group" key={product.id}
+          onClick={(product) => viewProduct(product)}>
           <div className="relative aspect-[.75] overflow-hidden bg-[#dbd9d1]">
             <span className="absolute top-3 left-3 z-2 grid size-[27px] place-items-center rounded-full bg-[#d6ff5c] text-[9px] font-bold text-[#1d270d]">0{index + 1}</span>
             <button className="absolute top-[11px] right-[11px] z-2 grid size-8 place-items-center rounded-full border-0 bg-white/88 text-[#242420]" aria-label={`Save ${product.name}`}>
@@ -41,7 +46,6 @@ export default function HomeProducts() {
           </div>
           <button className="flex min-h-[38px] w-full items-center justify-center gap-[7px] border border-[#292927] bg-transparent text-[11px] font-bold text-[#1d1d1b] transition-colors hover:bg-[#1d1d1b] hover:text-white" onClick={() => addItem(product)}><ShoppingBag size={16} /> Add to bag</button>
         </article>)}
-      {showProduct ? "this is true" :<ThemeToggleButton />}
     </div>
   </section>;
 }
