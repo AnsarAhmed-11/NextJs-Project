@@ -8,9 +8,9 @@ import Link from "next/link";
 const Form = ({ formType }) => {
     const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({
-        name:"",
+        name: "",
         email: "",
-        password: ""
+        password: "",
     })
     const formHandler = async (prevData, formData) => {
         const name = formData.get("name");
@@ -44,6 +44,7 @@ const Form = ({ formType }) => {
                 "Something went wrong";
 
             toast.error(error);
+            console.log(err);
 
             return {
                 error,
@@ -218,7 +219,7 @@ const Form = ({ formType }) => {
                                 placeholder="••••••••"
                                 autoComplete="new-password"
                                 minLength={8}
-                                value={formData.email}
+                                value={formData.password}
                                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                 required
                             />

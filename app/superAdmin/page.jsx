@@ -151,10 +151,10 @@ export default function SuperAdminPage() {
     event.target.value = "";
   }
   const superAdmin = users.find(
-  (user) => user.role === "Super Admin"
-);
+    (user) => user.role === "Super Admin"
+  );
   return (
-    <main className={styles.dashboard}>
+    <main className={styles.dashboard} >
       <aside className={styles.sidebar}>
         <div className={styles.brand}><ShieldCheck size={23} /><span>Control</span></div>
         <nav className={styles.navigation} aria-label="Dashboard navigation">
@@ -182,6 +182,7 @@ export default function SuperAdminPage() {
         <header className={styles.topbar}>
           <div className={styles.breadcrumb}><span>Control center</span><span>/</span><strong>User access</strong></div>
           <div className={styles.headerActions}><button className={styles.iconButton} aria-label="Notifications"><Bell size={19} /><i /></button><span className={`${styles.avatar} ${styles.headerAvatar}`}>SA</span>
+            <ThemeToggleButton />
             <LogoutButton />
           </div>
         </header>
@@ -194,7 +195,15 @@ export default function SuperAdminPage() {
         {notice && <div className={styles.notice}><Check size={17} />{notice}<button onClick={() => setNotice("")} aria-label="Dismiss notice"><X size={16} /></button></div>}
 
         <section className={styles.metrics} aria-label="Workspace statistics">
-          <article><span className={`${styles.metricIcon} ${styles.blueIcon}`}><UsersRound size={19} /></span><div><p>Total users</p><strong>{users.length}</strong><small><ArrowUpRight size={13} />2 this month</small></div></article>
+          <article>
+            <span className={`${styles.metricIcon} ${styles.blueIcon}`}>
+              <UsersRound size={19} />
+            </span>
+            <div><p>Total users</p>
+              <strong>{users.length}</strong>
+              <small><ArrowUpRight size={13} />2 this month</small>
+            </div>
+          </article>
           <article><span className={`${styles.metricIcon} ${styles.violetIcon}`}><ShieldCheck size={19} /></span><div><p>Administrators</p><strong>{adminCount}</strong><small>Full workspace access</small></div></article>
           <article><span className={`${styles.metricIcon} ${styles.orangeIcon}`}><ImagePlus size={19} /></span><div><p>Media assets</p><strong>{18 + uploads.length}</strong><small>Images in library</small></div></article>
         </section>

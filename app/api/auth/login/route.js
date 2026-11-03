@@ -4,7 +4,7 @@ const { findByEmail } = require("../../../models/user.model");
 const { createToken } = require("../../../config/auth");
 /**
  * -POST api/auth/login
- * -User Login
+ * -User Login logic
  */
 export async function POST(request) {
     try {

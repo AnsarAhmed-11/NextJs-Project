@@ -1,9 +1,10 @@
 import db from "../config/db";
 
 const findByEmail = async (email) => {
+
   const query = "SELECT * FROM users WHERE email = ?";
 
-  const [result] = await db.execute(query, [email]);
+  const [result] = await db.execute(query,[email]);
 
   return result;
 };
