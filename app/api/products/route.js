@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import imagekit from "../../config/imagekit";
 import { createProduct } from "../../models/product.model";
-
+//image Upload 
 export async function POST(request) {
     try {
         const formData = await request.formData();

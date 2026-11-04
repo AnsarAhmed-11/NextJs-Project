@@ -33,10 +33,7 @@ export async function POST(request) {
             );
         }
 
-        // Check password here
-        console.log("user password", user.password_hash);
-        console.log("ui password", password);
-
+ 
         const isPassword = await bcrypt.compare(password, user.password_hash)
         if (!isPassword) {
             return NextResponse.json(

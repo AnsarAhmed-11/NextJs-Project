@@ -2,7 +2,7 @@
 import { NextResponse } from "next/server";
 import { verifyToken } from "../../../config/auth";
 
-//Login Token Auth
+//Login Token Authenticatio 
 export async function POST(request) {
   try {
     const token = request.cookies.get("token")?.value;
