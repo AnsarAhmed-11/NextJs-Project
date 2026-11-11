@@ -91,8 +91,8 @@ const LoginForm = () => {
           <button
             type="button"
             className="flex min-h-11 w-full items-center justify-center gap-[10px] rounded-[10px] border border-border bg-secondary text-sm font-semibold text-secondary-foreground transition-all hover:-translate-y-0.5 hover:border-[#4cc9f0] hover:bg-white/10 hover:shadow-[0_0_8px_rgba(76,201,240,.4)] active:translate-y-0 max-[600px]:text-[13px]"
-            onClick={() => {
-              signIn("google", { callbackUrl: "/" });
+            onClick={async(e) => {
+              signIn("google", { callbackUrl: "/" })
             }}
           >
             Continue with Google

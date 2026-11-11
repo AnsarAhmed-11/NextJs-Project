@@ -14,8 +14,50 @@
     -- 1. USERS
     -- Supports email/password and Google authentication
     -- =====================================================
+CREATE TABLE users (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(150),
+    email VARCHAR(255) NOT NULL UNIQUE,
+    image TEXT,
+    emailVerified DATETIME NULL,
 
-    CREATE TABLE IF NOT EXISTS users (
+    password VARCHAR(255) NULL,
+    role ENUM('user', 'admin', 'superAdmin')
+        NOT NULL DEFAULT 'user',
+
+    phone VARCHAR(20) NULL,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP
+);
+CREATE TABLE accounts (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    userId BIGINT UNSIGNED NOT NULL,
+
+    type VARCHAR(50) NOT NULL,
+    provider VARCHAR(50) NOT NULL,
+    providerAccountId VARCHAR(255) NOT NULL,
+
+    access_token TEXT NULL,
+    refresh_token TEXT NULL,
+    expires_at BIGINT NULL,
+    token_type VARCHAR(100) NULL,
+    scope TEXT NULL,
+    id_token TEXT NULL,
+
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE KEY unique_provider_account (
+        provider,
+        providerAccountId
+    ),
+
+    FOREIGN KEY (userId)
+        REFERENCES users(id)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS users (
         id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 
         user_name VARCHAR(150) NOT NULL,
@@ -55,7 +97,7 @@
     -- Matches your existing product.model.js columns
     -- =====================================================
 
-    CREATE TABLE IF NOT EXISTS products (
+CREATE TABLE IF NOT EXISTS products (
         id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 
         slug VARCHAR(255) NOT NULL UNIQUE,
@@ -87,7 +129,7 @@
     -- Additional images for product galleries
     -- =====================================================
 
-    CREATE TABLE IF NOT EXISTS product_images (
+CREATE TABLE IF NOT EXISTS product_images (
         id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 
         product_id BIGINT UNSIGNED NOT NULL,
@@ -110,7 +152,7 @@
     -- Different sizes and stock quantities
     -- =====================================================
 
-    CREATE TABLE IF NOT EXISTS product_variants (
+CREATE TABLE IF NOT EXISTS product_variants (
         id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 
         product_id BIGINT UNSIGNED NOT NULL,
@@ -136,7 +178,7 @@
     -- 6. CUSTOMER ADDRESSES
     -- =====================================================
 
-    CREATE TABLE IF NOT EXISTS addresses (
+CREATE TABLE IF NOT EXISTS addresses (
         id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 
         user_id BIGINT UNSIGNED NOT NULL,
@@ -172,7 +214,7 @@
     -- 7. CART
     -- =====================================================
 
-    CREATE TABLE IF NOT EXISTS cart_items (
+CREATE TABLE IF NOT EXISTS cart_items (
         id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 
         user_id BIGINT UNSIGNED NOT NULL,
@@ -208,7 +250,8 @@
     -- 8. WISHLIST
     -- =====================================================
 
-    CREATE TABLE IF NOT EXISTS wishlist (
+   
+CREATE TABLE IF NOT EXISTS wishlist (
         id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 
         user_id BIGINT UNSIGNED NOT NULL,
@@ -234,7 +277,7 @@
     -- 9. ORDERS
     -- =====================================================
 
-    CREATE TABLE IF NOT EXISTS orders (
+CREATE TABLE IF NOT EXISTS orders (
         id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 
         order_number VARCHAR(50) NOT NULL UNIQUE,
@@ -293,7 +336,7 @@
     -- Stores the product and price at purchase time
     -- =====================================================
 
-    CREATE TABLE IF NOT EXISTS order_items (
+CREATE TABLE IF NOT EXISTS order_items (
         id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 
         order_id BIGINT UNSIGNED NOT NULL,
@@ -335,7 +378,7 @@
     -- Supports online payments and cash on delivery
     -- =====================================================
 
-    CREATE TABLE IF NOT EXISTS payments (
+CREATE TABLE IF NOT EXISTS payments (
         id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 
         order_id BIGINT UNSIGNED NOT NULL,
@@ -373,7 +416,7 @@
     -- 12. COUPONS
     -- =====================================================
 
-    CREATE TABLE IF NOT EXISTS coupons (
+CREATE TABLE IF NOT EXISTS coupons (
         id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 
         coupon_code VARCHAR(50) NOT NULL UNIQUE,
@@ -399,7 +442,7 @@
     -- 13. REVIEWS
     -- =====================================================
 
-    CREATE TABLE IF NOT EXISTS product_reviews (
+CREATE TABLE IF NOT EXISTS product_reviews (
         id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 
         user_id BIGINT UNSIGNED NOT NULL,
@@ -435,7 +478,7 @@
     -- Optional custom database session storage
     -- =====================================================
 
-    CREATE TABLE IF NOT EXISTS auth_sessions (
+CREATE TABLE IF NOT EXISTS auth_sessions (
         id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 
         user_id BIGINT UNSIGNED NOT NULL,

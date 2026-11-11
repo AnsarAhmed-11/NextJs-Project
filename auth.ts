@@ -39,7 +39,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const isMatch = await bcrypt.compare(password, user.user_password);
 
         if (!isMatch) return null;
-
+        //sending for token & session
         return {
           id: String(user.id),
           name: user.user_name,
@@ -59,73 +59,76 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     //user -> authneticated user info
     //account -> Provider information (google/credentials)
     //profile -> google received data
+
     async signIn({ user, account, profile }) {
-      // Credentials login
       if (account?.provider === "credentials") {
         return true;
       }
 
-      // Google login
       try {
         if (account?.provider === "google") {
           const email = user.email?.trim().toLowerCase();
           const googleId = account.providerAccountId;
-          const { access_token } = account;
+
           if (!email || !googleId) return false;
 
-          // Require Google's verified email
+          // Verify Google email
           if (!profile || (profile as any).email_verified !== true) {
             return false;
           }
 
-          // Check existing Google account
+          // 1. Check existing Google account
           let dbUser = await findGoogleAccount("GOOGLE", googleId);
 
-          // Returning Google user
           if (dbUser) {
+            if (!dbUser.is_active) return false;
+
             user.id = String(dbUser.id);
             user.role = dbUser.role;
+
             return true;
           }
 
-          // Check existing email account
+          // 2. Check existing email account
           const rows: any = await findByEmail(email);
           dbUser = rows[0];
 
-          // Create user if not registered
+          // 3. Create new user if not registered
           if (!dbUser) {
             const result: any = await createUser(
               user.name || "Google User",
               email,
-              null,
+              null
             );
-            console.log("result of createUser ", result);
-            dbUser = await findUserById(result.insertId); // id,user_name, user_email, user_password, role, is_active
+
+            dbUser = await findUserById(result.insertId);
           }
 
-          if (!dbUser) return false;
+          if (!dbUser || !dbUser.is_active) return false;
 
-          // Link Google account to MySQL user
+          // 4. Link Google account
           const linkResult: any = await createUserAccount({
             userId: dbUser.id,
             provider: "GOOGLE",
             providerAccountId: googleId,
             access_token: account.access_token,
           });
+
           if (linkResult.affectedRows !== 1) return false;
 
-          // Use MySQL ID, not Google ID
+          // 5. Set MySQL user ID
           user.id = String(dbUser.id);
           user.role = dbUser.role;
 
           return true;
         }
       } catch (err) {
-        console.log(err);
+        console.error("Google sign-in error:", err);
       }
 
       return false;
     },
+
 
     async jwt({ token, user }) {
       if (user) {
