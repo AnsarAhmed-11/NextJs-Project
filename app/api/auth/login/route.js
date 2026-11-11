@@ -34,7 +34,7 @@ export async function POST(request) {
         }
 
  
-        const isPassword = await bcrypt.compare(password, user.password_hash)
+        const isPassword = await bcrypt.compare(password, user.user_password)
         if (!isPassword) {
             return NextResponse.json(
                 {
@@ -56,7 +56,7 @@ export async function POST(request) {
             user: {
                 id: user.id,
                 name: user.user_name,
-                email: user.email,
+                email: user.user_email,
                 role: user.role
             }
         });

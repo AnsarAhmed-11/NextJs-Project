@@ -4,307 +4,308 @@ import axios from "axios";
 import { useActionState, useState } from "react";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import { signIn, signOut } from "next-auth/react";
 
 const Form = ({ formType }) => {
-    const [showPassword, setShowPassword] = useState(false);
-    const [formData, setFormData] = useState({
-        name: "",
-        email: "",
-        password: "",
-    })
-    const formHandler = async (prevData, formData) => {
-        const name = formData.get("name");
-        const email = formData.get("email");
-        const password = formData.get("password");
+  const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+  const formHandler = async (prevData, formData) => {
+    const name = formData.get("name");
+    const email = formData.get("email");
+    const password = formData.get("password");
 
-        try {
-            const res = await axios.post("/api/auth",
-                {
-                    name,
-                    email,
-                    password,
+    try {
+      const res = await axios.post("/api/auth", {
+        name,
+        email,
+        password,
+      });
+
+      if (res.data.status === "success") {
+        setFormData({ email: "", password: "" });
+        toast.success("User Created Successfully");
+      } else {
+        toast.error("User not Created");
+      }
+
+      return {
+        message: res.data.message || "Account created successfully",
+      };
+    } catch (err) {
+      // const error = err.response?.data?.error || "Something went wrong";
+      toast.error("something went wrong");
+      console.log(err);
+      
+      return {
+        err,
+      };
+    }
+  };
+
+  const [data, action, pending] = useActionState(formHandler, undefined);
+
+  return (
+    <main className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-card px-5 py-10 text-card-foreground max-[600px]:px-[15px] max-[600px]:py-[25px]">
+      {/* Background decoration */}
+      <div className="pointer-events-none absolute -top-[100px] -left-[100px] size-[300px] rounded-full bg-[#f72585] opacity-30 blur-[100px]"></div>
+      <div className="pointer-events-none absolute -right-[100px] -bottom-[100px] size-[300px] rounded-full bg-[#4cc9f0] opacity-30 blur-[100px]"></div>
+
+      <section className="relative [z-index:2] w-full max-w-[460px] rounded-3xl border border-border bg-card p-8 text-card-foreground shadow-[0_0_5px_#f72585,0_0_15px_rgba(247,37,133,.6),inset_0_0_30px_rgba(255,255,255,.02)] backdrop-blur-xl animate-[shadowColor_8s_infinite_linear] max-[600px]:rounded-[18px] max-[600px]:px-5 max-[600px]:py-[25px]">
+        {/* Heading */}
+        <div className="mb-[25px] text-center">
+          <h2 className="mb-2 text-[32px] font-black uppercase tracking-[2px] text-transparent [-webkit-text-stroke:1px_var(--foreground)] max-[600px]:text-[26px]">
+            {formType}
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Create your account and start your journey.
+          </p>
+        </div>
+
+        {/* Social Login */}
+        <div className="flex flex-col gap-3">
+          <button
+            type="button"
+            className="flex min-h-11 w-full items-center justify-center gap-[10px] rounded-[10px] border border-border bg-secondary text-sm font-semibold text-secondary-foreground transition-all hover:-translate-y-0.5 hover:border-[#4cc9f0] hover:bg-white/10 hover:shadow-[0_0_8px_rgba(76,201,240,.4)] active:translate-y-0 max-[600px]:text-[13px]"
+            onClick={() => {
+              signIn("google", { callbackUrl: "/" });
+            }}
+          >
+            <svg width="19" height="19" viewBox="0 0 24 24">
+              <path
+                fill="#4285F4"
+                d="M23.49 12.27c0-.79-.07-1.55-.2-2.27H12v4.3h6.44a5.5 5.5 0 0 1-2.39 3.61v3h3.87c2.27-2.09 3.57-5.17 3.57-8.64Z"
+              />
+
+              <path
+                fill="#34A853"
+                d="M12 24c3.24 0 5.95-1.07 7.93-2.91l-3.87-3c-1.07.72-2.43 1.15-4.06 1.15-3.12 0-5.77-2.11-6.72-4.95H1.28v3.09A12 12 0 0 0 12 24Z"
+              />
+
+              <path
+                fill="#FBBC05"
+                d="M5.28 14.29A7.2 7.2 0 0 1 4.9 12c0-.79.14-1.56.38-2.29V6.62H1.28A12 12 0 0 0 0 12c0 1.94.46 3.77 1.28 5.38l4-3.09Z"
+              />
+
+              <path
+                fill="#EA4335"
+                d="M12 4.76c1.76 0 3.34.61 4.58 1.81l3.43-3.43C17.95 1.18 15.24 0 12 0A12 12 0 0 0 1.28 6.62l4 3.09C5.23 6.87 7.88 4.76 12 4.76Z"
+              />
+            </svg>
+            Continue with Google
+          </button>
+
+          <button
+            type="button"
+            className="flex min-h-11 w-full items-center justify-center gap-[10px] rounded-[10px] border border-border bg-secondary text-sm font-semibold text-secondary-foreground transition-all hover:-translate-y-0.5 hover:border-[#4cc9f0] hover:bg-white/10 hover:shadow-[0_0_8px_rgba(76,201,240,.4)] active:translate-y-0 max-[600px]:text-[13px]"
+            onClick={() => {
+              toast.error("it is under development");
+            }}
+          >
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="white">
+              <path d="M12 .5A12 12 0 0 0 8.21 23.39c.6.11.82-.26.82-.58v-2.24c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.33-1.76-1.33-1.76-1.09-.75.08-.73.08-.73 1.2.08 1.84 1.23 1.84 1.23 1.07 1.83 2.8 1.3 3.49.99.11-.78.42-1.3.76-1.6-2.66-.3-5.46-1.33-5.46-5.93 0-1.31.47-2.38 1.23-3.22-.12-.3-.53-1.52.12-3.17 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.29-1.23 3.29-1.23.66 1.65.25 2.87.12 3.17.77.84 1.23 1.91 1.23 3.22 0 4.61-2.8 5.62-5.47 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.69.82.58A12 12 0 0 0 12 .5Z" />
+            </svg>
+            Continue with GitHub
+          </button>
+        </div>
+
+        {/* Divider */}
+        <div className="my-[25px] flex items-center gap-[15px] text-xs text-[#666]">
+          <span className="h-px flex-1 bg-white/10"></span>
+          <span className="text-[#777]">OR</span>
+          <span className="h-px flex-1 bg-white/10"></span>
+        </div>
+
+        {/* Form */}
+        <form
+          action={action}
+          className="flex flex-col gap-[18px] max-[600px]:gap-[15px]"
+        >
+          {/* Name */}
+          <div className="flex flex-col gap-[7px]">
+            <label
+              className="text-[13px] font-semibold text-foreground"
+              htmlFor="name"
+            >
+              Full name
+            </label>
+
+            <div className="relative w-full">
+              <span className="pointer-events-none absolute top-1/2 left-[13px] -translate-y-1/2 text-[15px] text-[#888]">
+                👤
+              </span>
+
+              <input
+                className="h-11 w-full rounded-[10px] border border-input bg-background px-[45px] text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-[#4cc9f0] focus:bg-white/[.08] focus:shadow-[0_0_0_2px_rgba(76,201,240,.1),0_0_10px_rgba(76,201,240,.2)]"
+                id="name"
+                type="text"
+                name="name"
+                placeholder="John Doe"
+                autoComplete="name"
+                value={formData?.name ?? ""}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    name: e.target.value,
+                  }))
                 }
-            );
+                required
+              />
+            </div>
+          </div>
 
-            if (res.data.status === "success") {
-                setFormData({ email: "", password: "" })
-                toast.success("User Created Successfully");
-            } else {
-                toast.error("User not Created");
-            }
+          {/* Email */}
+          <div className="flex flex-col gap-[7px]">
+            <label
+              className="text-[13px] font-semibold text-foreground"
+              htmlFor="email"
+            >
+              Email address
+            </label>
 
-            return {
-                message:
-                    res.data.message ||
-                    "Account created successfully",
-            };
-        } catch (err) {
-            const error =
-                err.response?.data?.error ||
-                "Something went wrong";
+            <div className="relative w-full">
+              <span className="pointer-events-none absolute top-1/2 left-[13px] -translate-y-1/2 text-[15px] text-[#888]">
+                ✉
+              </span>
 
-            toast.error(error);
-            console.log(err);
+              <input
+                className="h-11 w-full rounded-[10px] border border-input bg-background px-[45px] text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-[#4cc9f0] focus:bg-white/[.08] focus:shadow-[0_0_0_2px_rgba(76,201,240,.1),0_0_10px_rgba(76,201,240,.2)]"
+                id="email"
+                type="email"
+                name="email"
+                placeholder="john@example.com"
+                autoComplete="email"
+                value={formData?.email??""}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
+                required
+              />
+            </div>
+          </div>
 
-            return {
-                error,
-            };
-        }
-    };
+          {/* Password */}
+          <div className="flex flex-col gap-[7px]">
+            <div className="flex items-center justify-between">
+              <label
+                className="text-[13px] font-semibold text-foreground"
+                htmlFor="password"
+              >
+                Password
+              </label>
 
-    const [data, action, pending] = useActionState(
-        formHandler,
-        undefined
-    );
+              <span className="text-[11px] text-[#666]">
+                Minimum 8 characters
+              </span>
+            </div>
 
-    return (
-        <main className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-card px-5 py-10 text-card-foreground max-[600px]:px-[15px] max-[600px]:py-[25px]">
-            {/* Background decoration */}
-            <div className="pointer-events-none absolute -top-[100px] -left-[100px] size-[300px] rounded-full bg-[#f72585] opacity-30 blur-[100px]"></div>
-            <div className="pointer-events-none absolute -right-[100px] -bottom-[100px] size-[300px] rounded-full bg-[#4cc9f0] opacity-30 blur-[100px]"></div>
+            <div className="relative w-full">
+              <span className="pointer-events-none absolute top-1/2 left-[13px] -translate-y-1/2 text-[15px] text-[#888]">
+                🔒
+              </span>
 
-            <section className="relative [z-index:2] w-full max-w-[460px] rounded-3xl border border-border bg-card p-8 text-card-foreground shadow-[0_0_5px_#f72585,0_0_15px_rgba(247,37,133,.6),inset_0_0_30px_rgba(255,255,255,.02)] backdrop-blur-xl animate-[shadowColor_8s_infinite_linear] max-[600px]:rounded-[18px] max-[600px]:px-5 max-[600px]:py-[25px]">
-                {/* Heading */}
-                <div className="mb-[25px] text-center">
-                    <h2 className="mb-2 text-[32px] font-black uppercase tracking-[2px] text-transparent [-webkit-text-stroke:1px_var(--foreground)] max-[600px]:text-[26px]">{formType}</h2>
-                    <p className="text-sm text-muted-foreground">
-                        Create your account and start your journey.
-                    </p>
-                </div>
+              <input
+                className="h-11 w-full rounded-[10px] border border-input bg-background px-[45px] text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-[#4cc9f0] focus:bg-white/[.08] focus:shadow-[0_0_0_2px_rgba(76,201,240,.1),0_0_10px_rgba(76,201,240,.2)]"
+                id="password"
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="••••••••"
+                autoComplete="new-password"
+                minLength={8}
+                value={formData.password}
+                onChange={(e) =>
+                  setFormData({ ...formData, password: e.target.value })
+                }
+                required
+              />
 
-                {/* Social Login */}
-                <div className="flex flex-col gap-3">
+              <button
+                type="button"
+                className="absolute top-1/2 right-[10px] -translate-y-1/2 border-0 bg-transparent text-xs font-semibold text-[#4cc9f0] hover:text-[#90e0ef]"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
+          </div>
 
-                    <button
-                        type="button"
-                        className="flex min-h-11 w-full items-center justify-center gap-[10px] rounded-[10px] border border-border bg-secondary text-sm font-semibold text-secondary-foreground transition-all hover:-translate-y-0.5 hover:border-[#4cc9f0] hover:bg-white/10 hover:shadow-[0_0_8px_rgba(76,201,240,.4)] active:translate-y-0 max-[600px]:text-[13px]"
-                        onClick={() => {
-                            toast.error("it is under development");
-                        }}
-                    >
-                        <svg
-                            width="19"
-                            height="19"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                fill="#4285F4"
-                                d="M23.49 12.27c0-.79-.07-1.55-.2-2.27H12v4.3h6.44a5.5 5.5 0 0 1-2.39 3.61v3h3.87c2.27-2.09 3.57-5.17 3.57-8.64Z"
-                            />
+          {/* Terms */}
+          <label className="flex cursor-pointer items-start gap-[9px] text-xs leading-[1.5] text-muted-foreground">
+            <input
+              className="mt-0.5 size-[15px] accent-[#f72585]"
+              type="checkbox"
+              required
+            />
 
-                            <path
-                                fill="#34A853"
-                                d="M12 24c3.24 0 5.95-1.07 7.93-2.91l-3.87-3c-1.07.72-2.43 1.15-4.06 1.15-3.12 0-5.77-2.11-6.72-4.95H1.28v3.09A12 12 0 0 0 12 24Z"
-                            />
+            <span className="text-[#888]">
+              I agree to the{" "}
+              <a
+                className="text-[#4cc9f0] no-underline hover:underline"
+                onClick={() => {
+                  toast.error("under development");
+                }}
+              >
+                Terms of Service
+              </a>{" "}
+              and{" "}
+              <a
+                className="text-[#4cc9f0] no-underline hover:underline"
+                onClick={() => {
+                  toast.error("under development");
+                }}
+              >
+                Privacy Policy
+              </a>
+            </span>
+          </label>
 
-                            <path
-                                fill="#FBBC05"
-                                d="M5.28 14.29A7.2 7.2 0 0 1 4.9 12c0-.79.14-1.56.38-2.29V6.62H1.28A12 12 0 0 0 0 12c0 1.94.46 3.77 1.28 5.38l4-3.09Z"
-                            />
+          {/* Submit */}
+          <button
+            type="submit"
+            disabled={pending}
+            className="flex min-h-[46px] w-full items-center justify-center gap-2 rounded-[10px] border-0 bg-[linear-gradient(90deg,#f72585,#7209b7,#4361ee,#4cc9f0)] [background-size:300%_100%] text-sm font-bold text-white transition-all hover:-translate-y-0.5 hover:shadow-[0_0_10px_rgba(247,37,133,.6),0_0_25px_rgba(76,201,240,.3)] active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-[.65] animate-[gradientMove_5s_ease_infinite]"
+          >
+            {pending ? (
+              <>
+                <span className="size-[15px] animate-spin rounded-full border-2 border-white/30 border-t-white"></span>
+                Creating account...
+              </>
+            ) : (
+              "Create Account →"
+            )}
+          </button>
+        </form>
 
-                            <path
-                                fill="#EA4335"
-                                d="M12 4.76c1.76 0 3.34.61 4.58 1.81l3.43-3.43C17.95 1.18 15.24 0 12 0A12 12 0 0 0 1.28 6.62l4 3.09C5.23 6.87 7.88 4.76 12 4.76Z"
-                            />
-                        </svg>
+        {/* Error */}
+        {data?.error && (
+          <div className="mt-[15px] rounded-lg border border-red-500/30 bg-red-500/[.08] px-[13px] py-[11px] text-[13px] text-[#ff6b6b]">
+            ⚠ {data.error}
+          </div>
+        )}
 
-                        Continue with Google
-                    </button>
+        {/* Success */}
+        {data?.message && !data?.error && (
+          <div className="mt-[15px] rounded-lg border border-emerald-400/30 bg-emerald-400/[.08] px-[13px] py-[11px] text-[13px] text-[#5cffb0]">
+            ✓ {data.message}
+          </div>
+        )}
 
-                    <button
-                        type="button"
-                        className="flex min-h-11 w-full items-center justify-center gap-[10px] rounded-[10px] border border-border bg-secondary text-sm font-semibold text-secondary-foreground transition-all hover:-translate-y-0.5 hover:border-[#4cc9f0] hover:bg-white/10 hover:shadow-[0_0_8px_rgba(76,201,240,.4)] active:translate-y-0 max-[600px]:text-[13px]"
-                        onClick={() => {
-                            toast.error("it is under development");
-                        }}
-                    >
-                        <svg
-                            width="19"
-                            height="19"
-                            viewBox="0 0 24 24"
-                            fill="white"
-                        >
-                            <path d="M12 .5A12 12 0 0 0 8.21 23.39c.6.11.82-.26.82-.58v-2.24c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.33-1.76-1.33-1.76-1.09-.75.08-.73.08-.73 1.2.08 1.84 1.23 1.84 1.23 1.07 1.83 2.8 1.3 3.49.99.11-.78.42-1.3.76-1.6-2.66-.3-5.46-1.33-5.46-5.93 0-1.31.47-2.38 1.23-3.22-.12-.3-.53-1.52.12-3.17 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.29-1.23 3.29-1.23.66 1.65.25 2.87.12 3.17.77.84 1.23 1.91 1.23 3.22 0 4.61-2.8 5.62-5.47 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.69.82.58A12 12 0 0 0 12 .5Z" />
-                        </svg>
-
-                        Continue with GitHub
-                    </button>
-
-                </div>
-
-                {/* Divider */}
-                <div className="my-[25px] flex items-center gap-[15px] text-xs text-[#666]"><span className="h-px flex-1 bg-white/10"></span>
-                    <span className="text-[#777]">OR</span><span className="h-px flex-1 bg-white/10"></span>
-                </div>
-
-                {/* Form */}
-                <form action={action} className="flex flex-col gap-[18px] max-[600px]:gap-[15px]">
-
-                    {/* Name */}
-                    <div className="flex flex-col gap-[7px]">
-                        <label className="text-[13px] font-semibold text-foreground" htmlFor="name">
-                            Full name
-                        </label>
-
-                        <div className="relative w-full">
-                            <span className="pointer-events-none absolute top-1/2 left-[13px] -translate-y-1/2 text-[15px] text-[#888]">
-                                👤
-                            </span>
-
-                            <input
-                                className="h-11 w-full rounded-[10px] border border-input bg-background px-[45px] text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-[#4cc9f0] focus:bg-white/[.08] focus:shadow-[0_0_0_2px_rgba(76,201,240,.1),0_0_10px_rgba(76,201,240,.2)]"
-                                id="name"
-                                type="text"
-                                name="name"
-                                placeholder="John Doe"
-                                autoComplete="name"
-                                value={formData.name}
-                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                required
-                            />
-                        </div>
-                    </div>
-
-                    {/* Email */}
-                    <div className="flex flex-col gap-[7px]">
-                        <label className="text-[13px] font-semibold text-foreground" htmlFor="email">
-                            Email address
-                        </label>
-
-                        <div className="relative w-full">
-                            <span className="pointer-events-none absolute top-1/2 left-[13px] -translate-y-1/2 text-[15px] text-[#888]">
-                                ✉
-                            </span>
-
-                            <input
-                                className="h-11 w-full rounded-[10px] border border-input bg-background px-[45px] text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-[#4cc9f0] focus:bg-white/[.08] focus:shadow-[0_0_0_2px_rgba(76,201,240,.1),0_0_10px_rgba(76,201,240,.2)]"
-                                id="email"
-                                type="email"
-                                name="email"
-                                placeholder="john@example.com"
-                                autoComplete="email"
-                                value={formData.email}
-                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                required
-                            />
-                        </div>
-                    </div>
-
-                    {/* Password */}
-                    <div className="flex flex-col gap-[7px]">
-                        <div className="flex items-center justify-between">
-                            <label className="text-[13px] font-semibold text-foreground" htmlFor="password">
-                                Password
-                            </label>
-
-                            <span className="text-[11px] text-[#666]">
-                                Minimum 8 characters
-                            </span>
-                        </div>
-
-                        <div className="relative w-full">
-                            <span className="pointer-events-none absolute top-1/2 left-[13px] -translate-y-1/2 text-[15px] text-[#888]">
-                                🔒
-                            </span>
-
-                            <input
-                                className="h-11 w-full rounded-[10px] border border-input bg-background px-[45px] text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-[#4cc9f0] focus:bg-white/[.08] focus:shadow-[0_0_0_2px_rgba(76,201,240,.1),0_0_10px_rgba(76,201,240,.2)]"
-                                id="password"
-                                type={
-                                    showPassword
-                                        ? "text"
-                                        : "password"
-                                }
-                                name="password"
-                                placeholder="••••••••"
-                                autoComplete="new-password"
-                                minLength={8}
-                                value={formData.password}
-                                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                required
-                            />
-
-                            <button
-                                type="button"
-                                className="absolute top-1/2 right-[10px] -translate-y-1/2 border-0 bg-transparent text-xs font-semibold text-[#4cc9f0] hover:text-[#90e0ef]"
-                                onClick={() =>
-                                    setShowPassword(
-                                        !showPassword
-                                    )
-                                }
-                            >
-                                {showPassword
-                                    ? "Hide"
-                                    : "Show"}
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Terms */}
-                    <label className="flex cursor-pointer items-start gap-[9px] text-xs leading-[1.5] text-muted-foreground">
-                        <input
-                            className="mt-0.5 size-[15px] accent-[#f72585]"
-                            type="checkbox"
-                            required
-                        />
-
-                        <span className="text-[#888]">
-                            I agree to the{" "}
-                            <a className="text-[#4cc9f0] no-underline hover:underline" onClick={() => {
-                                toast.error("under development")
-                            }}>
-                                Terms of Service
-                            </a>{" "}
-                            and{" "}
-                            <a className="text-[#4cc9f0] no-underline hover:underline" onClick={() => {
-                                toast.error("under development")
-                            }}>
-                                Privacy Policy
-                            </a>
-                        </span>
-                    </label>
-
-                    {/* Submit */}
-                    <button
-                        type="submit"
-                        disabled={pending}
-                        className="flex min-h-[46px] w-full items-center justify-center gap-2 rounded-[10px] border-0 bg-[linear-gradient(90deg,#f72585,#7209b7,#4361ee,#4cc9f0)] [background-size:300%_100%] text-sm font-bold text-white transition-all hover:-translate-y-0.5 hover:shadow-[0_0_10px_rgba(247,37,133,.6),0_0_25px_rgba(76,201,240,.3)] active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-[.65] animate-[gradientMove_5s_ease_infinite]"
-                    >
-                        {pending ? (
-                            <>
-                                <span className="size-[15px] animate-spin rounded-full border-2 border-white/30 border-t-white"></span>
-                                Creating account...
-                            </>
-                        ) : (
-                            "Create Account →"
-                        )}
-                    </button>
-
-                </form>
-
-                {/* Error */}
-                {data?.error && (
-                    <div className="mt-[15px] rounded-lg border border-red-500/30 bg-red-500/[.08] px-[13px] py-[11px] text-[13px] text-[#ff6b6b]">
-                        ⚠ {data.error}
-                    </div>
-                )}
-
-                {/* Success */}
-                {data?.message && !data?.error && (
-                    <div className="mt-[15px] rounded-lg border border-emerald-400/30 bg-emerald-400/[.08] px-[13px] py-[11px] text-[13px] text-[#5cffb0]">
-                        ✓ {data.message}
-                    </div>
-                )}
-
-                {/* Login */}
-                <p className="mt-[22px] text-center text-[13px] text-muted-foreground">
-                    Already have an account?{" "}
-                    <Link className="font-semibold text-[#4cc9f0] no-underline hover:text-[#90e0ef] hover:underline" href="/SignIn">SignIn</Link>
-                </p>
-
-            </section>
-        </main >
-    );
+        {/* Login */}
+        <p className="mt-[22px] text-center text-[13px] text-muted-foreground">
+          Already have an account?{" "}
+          <Link
+            className="font-semibold text-[#4cc9f0] no-underline hover:text-[#90e0ef] hover:underline"
+            href="/login"
+          >
+            Login
+          </Link>
+        </p>
+      </section>
+    </main>
+  );
 };
 
 export default Form;

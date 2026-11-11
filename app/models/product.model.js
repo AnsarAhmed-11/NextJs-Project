@@ -6,8 +6,6 @@ export const getProducts = async () => {
   return result;
 }
 export const createProduct = async (product) => {
-  console.log("create details", product);
-
   const sql = `
         INSERT INTO products (
             slug,

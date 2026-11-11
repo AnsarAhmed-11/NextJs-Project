@@ -49,7 +49,7 @@ export default function SuperAdminPage() {
             : [];
         const formattedUsers = apiUsers.map((user) => {
           const name = String(user.user_name ?? "").trim();
-          const email = String(user.email ?? "No email").trim();
+          const email = String(user.user_email ?? "No email").trim();
 
           const initials = name
             ? name

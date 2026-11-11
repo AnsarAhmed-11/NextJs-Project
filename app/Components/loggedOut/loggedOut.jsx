@@ -16,12 +16,10 @@ const LogoutButton = () => {
     if (logOut) return;
     setLogOut(true);
     try {
-      console.log("clicked");
-
       const response = await axios.post("/api/auth/logout");
       if(response.data.success===true){
         toast.success("logout SuccessFully");
-        router.replace("/SignIn");
+        router.replace("/login");
         router.refresh();
       }else{
         toast.error("LogOut Failed")

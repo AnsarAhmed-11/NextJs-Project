@@ -14,7 +14,7 @@ export async function proxy(request) {
         // No token
         if (!token) {
             return NextResponse.redirect(
-                new URL("/SignIn", request.url)
+                new URL("/login", request.url)
             );
         }
 
@@ -23,7 +23,7 @@ export async function proxy(request) {
 
         if (!user) {
             return NextResponse.redirect(
-                new URL("/SignIn", request.url)
+                new URL("/login", request.url)
             );
         }
         // Super Admin can access superAdmin
@@ -42,7 +42,7 @@ export async function proxy(request) {
             user.role !== "Admin" && user.role !== "Super_Admin"
         ) {
             return NextResponse.redirect(
-                new URL("/SignIn", request.url)
+                new URL("/login", request.url)
             );
         }
 
@@ -55,7 +55,7 @@ export async function proxy(request) {
 export const config = {
     matcher: [
         "/admin/:path*",
-        "/superAdmin",
+        "/superAdmin/:path*",
         "/dashboard/:path*",
     ],
 };
