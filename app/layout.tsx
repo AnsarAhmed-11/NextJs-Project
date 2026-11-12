@@ -10,7 +10,7 @@ import {
 import { CartProvider } from "./Components/cart/CartContext";
 import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
-
+import SessionProvider from "@/app/Components/sessionprovider/Provider"
 const playfairDisplayHeading = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-heading",
@@ -55,7 +55,9 @@ export default function RootLayout({
         >
           <CartProvider>
             <Toaster />
+            <SessionProvider>
             {children}
+            </SessionProvider>
           </CartProvider>
         </ThemeProvider>
       </body>

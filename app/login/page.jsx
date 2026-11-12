@@ -6,12 +6,14 @@ import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { useActionState, useState } from "react";
 import toast from "react-hot-toast";
-
+import { useSession } from "next-auth/react"
 const LoginForm = () => {
+  const { data: session } = useSession()
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  console.log(session)
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
@@ -20,37 +22,38 @@ const LoginForm = () => {
     const password = formData.get("password");
 
     try {
-      const res = await axios.post("/api/auth/login", {
-        email,
-        password,
-      });
-      console.log(res.data);
-      if (res.data.success) {
-        setFormData({ email: "", password: "" });
+      const res = await signIn("credentials", { email, password })
+      if(session?.user?.role==="Super_Admin"){
+        toast.success("welcome to Admin Profile")
+        router.push("/superAdmin")
       }
-      if (res.data.status === true) {
-        if (res.data.user.role === "Super_Admin") {
-          toast.success("welcome to Admin Profile");
-          return router.push("/superAdmin");
-        }
-        router.push("/");
-        toast.success("Login successful!");
-        return {
-          error: null,
-          message: null,
-        };
-      }
+  //     console.log("res ok", res);
+  //     if(session?.user){
+  //       setShowPassword("user not found")
+  //     }
+  //     if (res.data.status === true) {
+  //       if (res.data.user.role === "Super_Admin") {
+  //         toast.success("welcome to Admin Profile");
+  //         return router.push("/superAdmin");
+  //       }
+  //       router.push("/");
+  //       toast.success("Login successful!");
+  //       return {
+  //         error: null,
+  //         message: null,
+  //       };
+  //     }
 
-      // API response failed
-      const errorMessage = res.data.error || res.data.message || "Login failed";
+  //     // API response failed
+  //     const errorMessage = res.data.error || res.data.message || "Login failed";
 
-      toast.error(errorMessage);
+  //     toast.error(errorMessage);
 
-      return {
-        error: errorMessage,
-        message: null,
-      };
-    } catch (err) {
+  //     return {
+  //       error: errorMessage,
+  //       message: null,
+  //     };
+  } catch (err) {
       const errorMessage =
         err.response?.data?.error ||
         err.response?.data?.message ||
@@ -61,9 +64,9 @@ const LoginForm = () => {
       return {
         error: errorMessage,
         message: null,
-      };
-    }
-  };
+     }
+   }
+  }
 
   const [data, action, pending] = useActionState(formHandler, {
     error: null,
@@ -91,7 +94,7 @@ const LoginForm = () => {
           <button
             type="button"
             className="flex min-h-11 w-full items-center justify-center gap-[10px] rounded-[10px] border border-border bg-secondary text-sm font-semibold text-secondary-foreground transition-all hover:-translate-y-0.5 hover:border-[#4cc9f0] hover:bg-white/10 hover:shadow-[0_0_8px_rgba(76,201,240,.4)] active:translate-y-0 max-[600px]:text-[13px]"
-            onClick={async(e) => {
+            onClick={async (e) => {
               signIn("google", { callbackUrl: "/" })
             }}
           >

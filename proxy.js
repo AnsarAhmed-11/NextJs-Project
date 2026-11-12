@@ -1,56 +1,62 @@
 import { NextResponse } from "next/server";
-import { verifyToken } from "./app/config/auth";
+import { auth } from "@/auth";
 
-export async function proxy(request) {
-    const token = request.cookies.get("token")?.value;
-    const path = request.nextUrl.pathname;
+export default auth((req) => {
 
+    const { nextUrl } = req;
+    const session = req.auth;
+    console.log("user session", session)
+    console.log("nexturl here", nextUrl)
+    const path = nextUrl.pathname
+    const isLogin = session?.user
     // Protected routes
     if (
         path.startsWith("/superAdmin") ||
         path.startsWith("/dashboard") ||
         path.startsWith("/superAdmin/products")
     ) {
-        // No token
-        if (!token) {
+        if (!isLogin) {
             return NextResponse.redirect(
-                new URL("/login", request.url)
+                new URL("/login", req.url)
             );
         }
-
-        // Verify JWT
-        const user = await verifyToken(token);
-
-        if (!user) {
+        if (!session?.user?.role === "Super_Admin" || session?.user?.role === "User" || session?.user?.role==="Admin") {
             return NextResponse.redirect(
-                new URL("/login", request.url)
-            );
-        }
-        // Super Admin can access superAdmin
-        if (
-            path.startsWith("/superAdmin") &&
-            user.role !== "Super_Admin"
-        ) {
-            return NextResponse.redirect(
-                new URL("/unauthorized", request.url)
-            );
+                new URL("/unauthorized", req.url)
+            )
         }
 
-        // Admin can access product panel only
-        if (
-            path.startsWith("/superAdmin/products") &&
-            user.role !== "Admin" && user.role !== "Super_Admin"
-        ) {
-            return NextResponse.redirect(
-                new URL("/login", request.url)
-            );
-        }
+        if(path.startsWith("/superAdmin/products")){
+            if(session?.user?.role==="User"|| !session?.user?.role==="Super_Admin" || !session?.user?.role==="Admin"){
+                return NextResponse.redirect(
+                    new URL("/Unauthorized for Users",req.url)
+                )
+            }
+        }      //     // Super Admin can access superAdmin
+        //     if (
+        //         path.startsWith("/superAdmin") &&
+        //         user.role !== "Super_Admin"
+        //     ) {
+        //         return NextResponse.redirect(
+        //             new URL("/unauthorized", req.url)
+        //         );
+        //     }
 
-        return NextResponse.next();
+        //     // Admin can access product panel only
+        //     if (
+        //         path.startsWith("/superAdmin/products") &&
+        //         user.role !== "Admin" && user.role !== "Super_Admin"
+        //     ) {
+        //         return NextResponse.redirect(
+        //             new URL("/login", req.url)
+        //         );
+        //     }
+
+        //     return NextResponse.next();
     }
 
     return NextResponse.next();
-}
+});
 
 export const config = {
     matcher: [

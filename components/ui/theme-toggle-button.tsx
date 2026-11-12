@@ -53,7 +53,7 @@ export function ThemeToggleButton({
       type="button"
       className={cn(
         "inline-flex size-10 cursor-pointer items-center justify-center rounded-full p-0 transition-all duration-300 active:scale-85",
-        isDark ? "bg-white text-black" : "bg-black text-black",
+        isDark ? "bg-black text-white" : "bg-black text-white",
         className,
       )}
       onClick={toggleTheme}
