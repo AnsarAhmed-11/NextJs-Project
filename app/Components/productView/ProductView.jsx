@@ -3,8 +3,11 @@
 import Image from "next/image";
 import { Check, Heart, ShieldCheck, Truck, X } from "lucide-react";
 import { useEffect } from "react";
+import toast from "react-hot-toast"
+import { useRouter } from "next/navigation";
 
 export default function ProductView({ product, onClose, onAddToCart }) {
+  const router=useRouter()
   useEffect(() => {
     if (!product) return undefined;
 
@@ -31,6 +34,8 @@ export default function ProductView({ product, onClose, onAddToCart }) {
 
   const handleAddToCart = () => {
     onAddToCart?.(product);
+    toast.success("product added to cart")
+    router.push("/cart")
     onClose();
   };
 

@@ -6,7 +6,7 @@ const { createToken } = require("../../../config/auth");
  * -POST api/auth/login
  * -User Login logic
  */
-export async function POST(request) {
+ async function POST(request) {
     try {
         const { email, password } = await request.json();
 

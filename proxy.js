@@ -15,44 +15,26 @@ export default auth((req) => {
         path.startsWith("/dashboard") ||
         path.startsWith("/superAdmin/products")
     ) {
+        //check login status
         if (!isLogin) {
             return NextResponse.redirect(
                 new URL("/login", req.url)
             );
         }
-        if (!session?.user?.role === "Super_Admin" || session?.user?.role === "User" || session?.user?.role==="Admin") {
-            return NextResponse.redirect(
-                new URL("/unauthorized", req.url)
-            )
-        }
-
-        if(path.startsWith("/superAdmin/products")){
-            if(session?.user?.role==="User"|| !session?.user?.role==="Super_Admin" || !session?.user?.role==="Admin"){
+        if (path.startsWith("/superAdmin")) {
+            if (session?.user?.role !== "Super_Admin" || session?.user?.role === "User" || session?.user?.role === "Admin") {
                 return NextResponse.redirect(
-                    new URL("/Unauthorized for Users",req.url)
+                    new URL("/unauthorized", req.url)
                 )
             }
-        }      //     // Super Admin can access superAdmin
-        //     if (
-        //         path.startsWith("/superAdmin") &&
-        //         user.role !== "Super_Admin"
-        //     ) {
-        //         return NextResponse.redirect(
-        //             new URL("/unauthorized", req.url)
-        //         );
-        //     }
-
-        //     // Admin can access product panel only
-        //     if (
-        //         path.startsWith("/superAdmin/products") &&
-        //         user.role !== "Admin" && user.role !== "Super_Admin"
-        //     ) {
-        //         return NextResponse.redirect(
-        //             new URL("/login", req.url)
-        //         );
-        //     }
-
-        //     return NextResponse.next();
+        }
+        if (path.startsWith("/superAdmin/products")) {
+            if (session?.user?.role !== "Super_Admin" && session?.user?.role !== "Admin") {
+                return NextResponse.redirect(
+                    new URL("/Unauthorized for Users", req.url)
+                )
+            }
+        }
     }
 
     return NextResponse.next();

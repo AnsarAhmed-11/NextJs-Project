@@ -1,12 +1,6 @@
 import { NextResponse } from "next/server";
 import db from "../../config/db";
 const { getUser, findByEmail ,createUser} = require("../../models/user.model")
-/**
- *
- * -
- * -
- */
-
 export async function GET(request) {
   try {
     const users = await getUser()

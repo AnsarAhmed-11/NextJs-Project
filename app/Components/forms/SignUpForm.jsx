@@ -24,12 +24,12 @@ const Form = ({ formType }) => {
         email,
         password,
       });
-
-      if (res.data.status === "success") {
+      console.log(res.data)
+      if (res?.data?.status === "success") {
         setFormData({ email: "", password: "" });
         toast.success("User Created Successfully");
       } else {
-        toast.error("User not Created");
+        toast.error(res?.data?.message);
       }
 
       return {

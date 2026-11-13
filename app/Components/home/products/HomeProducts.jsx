@@ -8,8 +8,10 @@ import { products } from "./productData";
 import { useState } from "react";
 import ProductView from "./../../productView/ProductView";
 import { ThemeToggleButton } from "../../../../components/ui/theme-toggle-button";
-
+import toast from "react-hot-toast"
+import { useRouter } from "next/navigation";
 export default function HomeProducts() {
+  const router=useRouter()
   const { addItem } = useCart();
   const [onClose, setClose] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -77,6 +79,8 @@ export default function HomeProducts() {
               className="flex min-h-[38px] w-full items-center justify-center gap-[7px] border border-[#292927] bg-transparent text-[11px] font-bold text-[#1d1d1b] transition-colors hover:bg-[#1d1d1b] hover:text-white"
               onClick={(event) => {
                 event.stopPropagation();
+                toast.success("product added to cart")
+                router.push("/cart")
                 addItem(product);
               }}
             >

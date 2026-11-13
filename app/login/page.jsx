@@ -2,9 +2,9 @@
 
 import { ThemeToggleButton } from "@/components/ui/theme-toggle-button";
 import axios from "axios";
-import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
-import { useActionState, useState } from "react";
+import { redirect, useRouter } from "next/navigation";
+import { getSession, signIn } from "next-auth/react";
+import { useActionState, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useSession } from "next-auth/react"
 const LoginForm = () => {
@@ -13,60 +13,68 @@ const LoginForm = () => {
     email: "",
     password: "",
   });
-  console.log(session)
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+ const formHandler = async (prevData, formData) => {
+  const email = formData.get("email");
+  const password = formData.get("password");
+  try {
 
-  const formHandler = async (prevData, formData) => {
-    const email = formData.get("email");
-    const password = formData.get("password");
+    const response = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
 
-    try {
-      const res = await signIn("credentials", { email, password })
-      if(session?.user?.role==="Super_Admin"){
-        toast.success("welcome to Admin Profile")
-        router.push("/superAdmin")
-      }
-  //     console.log("res ok", res);
-  //     if(session?.user){
-  //       setShowPassword("user not found")
-  //     }
-  //     if (res.data.status === true) {
-  //       if (res.data.user.role === "Super_Admin") {
-  //         toast.success("welcome to Admin Profile");
-  //         return router.push("/superAdmin");
-  //       }
-  //       router.push("/");
-  //       toast.success("Login successful!");
-  //       return {
-  //         error: null,
-  //         message: null,
-  //       };
-  //     }
+    console.log("Auth response:", response);
 
-  //     // API response failed
-  //     const errorMessage = res.data.error || res.data.message || "Login failed";
-
-  //     toast.error(errorMessage);
-
-  //     return {
-  //       error: errorMessage,
-  //       message: null,
-  //     };
-  } catch (err) {
-      const errorMessage =
-        err.response?.data?.error ||
-        err.response?.data?.message ||
-        "Invalid email or password";
-
-      toast.error(errorMessage);
+    // 1. Login failed
+    if (!response || response.error || !response.ok) {
+      toast.error("Invalid email or password");
 
       return {
-        error: errorMessage,
+        error: "Invalid email or password",
         message: null,
-     }
-   }
+      };
+    }
+
+    // 2. Login successful
+    const updatedSession = await getSession();
+
+    console.log("Updated session:", updatedSession);
+
+    // 3. Check user role
+    if (updatedSession?.user?.role === "Super_Admin") {
+      toast.success("Welcome to Admin Profile");
+
+      router.push("/superAdmin");
+      return {
+        error: null,
+        message: "Login successful",
+      };
+    }
+
+    // 4. Normal user
+    toast.success("Login successful!");
+
+    router.push("/");
+
+    return {
+      error: null,
+      message: "Login successful",
+    };
+
+  } catch (error) {
+    console.error("Login error:", error);
+
+    toast.error("Something went wrong!");
+
+    return {
+      error: "Something went wrong!",
+      message: null,
+    };
   }
+};
 
   const [data, action, pending] = useActionState(formHandler, {
     error: null,

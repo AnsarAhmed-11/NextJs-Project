@@ -10,6 +10,12 @@ const { findByEmail, createUser } = require("../../models/user.model")
 export async function POST(request) {
     try {
         const { name, email, password } = await request.json();
+
+        if (!name || !email || !password) {
+            return NextResponse.json({
+                message: "all fields are required"
+            },{status:409})
+        }
         const result = await findByEmail(email)
         if (result.length > 0) {
             return NextResponse.json({

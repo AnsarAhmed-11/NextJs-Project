@@ -1,14 +1,15 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-
+import toast from "react-hot-toast"
 const CartContext = createContext(null);
 const CART_KEY = "luma-form-cart";
 
 export function CartProvider({ children }) {
   const [items, setItems] = useState([]);
   const [ready, setReady] = useState(false);
-
+  const router=useRouter()
   useEffect(() => {
     try {
       const savedItems = window.localStorage.getItem(CART_KEY);
